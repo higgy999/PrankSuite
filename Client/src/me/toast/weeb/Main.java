@@ -15,18 +15,23 @@ public class Main {
     public static Client CLIENT;
     public static String SERVER_IP;
 
+    public static void tryConnect() {
+        while (!CLIENT.isConnected()) {
+            try {
+                CLIENT.connect(5000, SERVER_IP, 54555);
+                if (CLIENT.isConnected())
+                    break;
+            } catch (IOException e) {
+                System.err.println("Couldn't connect retrying in 1 minute...");
+                SleepFor1Minute();
+            }
+        }
+    }
+
     public static Listener LISTENER = new Listener() {
         public void disconnected(Connection connection) {
-            while (!CLIENT.isConnected()) {
-                try {
-                    CLIENT.reconnect();
-                    if (CLIENT.isConnected())
-                        break;
-                } catch (IOException e) {
-                    System.err.println("Couldn't connect retrying in 1 minute...");
-                    SleepFor1Minute();
-                }
-            }
+            System.out.println("Disconnected from Server!");
+            Thread thread = new Thread(Main::tryConnect); thread.start();
         }
         public void received(Connection connection, Object object) {
             if (object instanceof Packets.OpenWindowsRequest) {
@@ -36,9 +41,9 @@ public class Main {
                 connection.sendTCP(startResponse);
 
                 List<String> listOfWindows = RunningPrograms.getAllWindowNames();
-                for (int i = 0; i < listOfWindows.size(); i++) {
+                for (String listOfWindow : listOfWindows) {
                     Packets.OpenWindowsResponse response = new Packets.OpenWindowsResponse();
-                    response.openWindow = listOfWindows.get(i);
+                    response.openWindow = listOfWindow;
                     connection.sendTCP(response);
                 }
                 Packets.OpenWindowsFinalResponse last = new Packets.OpenWindowsFinalResponse();
@@ -80,13 +85,7 @@ public class Main {
         Packets.RegisterPackets(CLIENT.getKryo());
         Thread thread = new Thread(CLIENT, "Networking"); thread.start();
 
-        while (!CLIENT.isConnected()) {
-            try {
-                CLIENT.connect(5000, SERVER_IP, 54555);
-                if (CLIENT.isConnected())
-                    break;
-            } catch (IOException e) { System.err.println("Couldn't connect retrying in 1 minute..."); SleepFor1Minute(); }
-        }
+        tryConnect();
 
         CLIENT.addListener(LISTENER);
     }
