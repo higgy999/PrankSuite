@@ -2,15 +2,14 @@
 <project version="4">
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
-      <artifact name="Server:jar" />
+      <artifact name="Client:jar" />
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3251243d-29fa-4c7e-9a3a-385c00a897d9" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Client/src/me/toast/weeb/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/src/me/toast/weeb/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WeebDetector.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/WeebDetector.ipr" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/src/me/toast/weeb/WallpaperChanger.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/src/me/toast/weeb/WallpaperChanger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/src/me/toast/weeb/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/me/toast/weeb/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WeebDetector.iws" beforeDir="false" afterPath="$PROJECT_DIR$/WeebDetector.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/Client_jar/Client.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/Client_jar/Client.jar" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
