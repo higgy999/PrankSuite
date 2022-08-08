@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import com.esotericsoftware.kryonet.Server;
 import javafx.application.Application;
@@ -42,9 +43,7 @@ public class PSServer extends Application {
     public static Listener LISTENER = new Listener() {
         public void connected(Connection connection) {
             connectedClients.put(connection.getID(), connection.getRemoteAddressTCP().getHostString());
-             Platform.runLater(() -> {
-                clientList.getItems().add(connection.getRemoteAddressTCP().getHostString());
-            });
+             Platform.runLater(() -> clientList.getItems().add(connection.getRemoteAddressTCP().getHostString()));
         }
         public void disconnected(Connection connection) {
             Platform.runLater(() -> {
@@ -84,22 +83,20 @@ public class PSServer extends Application {
         stage.setTitle("Weeb Detector - Server");
 
         refreshOpenWindows = new Button("Refresh");
-        refreshOpenWindows.setOnAction(e -> {
-            askForWindows(selectedClient);
-        });
+        refreshOpenWindows.setOnAction(e -> askForWindows(selectedClient));
 
         changeBackground = new Button("Change Background");
         changeBackground.setOnAction(e -> {
             Packets.ChangeBackground request = new Packets.ChangeBackground();
             System.out.println("Sending Change Background Request...");
-            try { getConnectionFromIP(selectedClient).sendTCP(request); } catch (NullPointerException except) {System.out.println("Client IP given was invalid!");}
+            try { Objects.requireNonNull(getConnectionFromIP(selectedClient)).sendTCP(request); } catch (NullPointerException except) {System.out.println("Client IP given was invalid!");}
         });
 
         createPopUp = new Button("Create Popup");
         createPopUp.setOnAction(e -> {
             Packets.TriggerPopup request = new Packets.TriggerPopup();
             System.out.println("Sending Popup Request...");
-            try { getConnectionFromIP(selectedClient).sendTCP(request); } catch (NullPointerException except) {System.out.println("Client IP given was invalid!");}
+            try { Objects.requireNonNull(getConnectionFromIP(selectedClient)).sendTCP(request); } catch (NullPointerException except) {System.out.println("Client IP given was invalid!");}
         });
 
         closeWindow = new Button("Close Window");
@@ -109,7 +106,7 @@ public class PSServer extends Application {
                 request.nameOfWindow = selectedWindow;
                 System.out.println("Sending Close Window Request...");
                 try {
-                    getConnectionFromIP(selectedClient).sendTCP(request);
+                    Objects.requireNonNull(getConnectionFromIP(selectedClient)).sendTCP(request);
                 } catch (NullPointerException except) {
                     System.out.println("Client IP given was invalid!");
                 }
@@ -121,9 +118,7 @@ public class PSServer extends Application {
         openWindows.setPrefWidth(500);
         openWindows.setPrefHeight(600);
         openWindows.setEditable(false);
-        openWindows.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
-            selectedWindow = newValue;
-        });
+        openWindows.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> selectedWindow = newValue);
 
         clientList = new ListView<>();
         clientList.setPrefWidth(500);
@@ -161,7 +156,7 @@ public class PSServer extends Application {
     public void askForWindows(String ip) {
         Packets.OpenWindowsRequest request = new Packets.OpenWindowsRequest();
         System.out.println("Sending Window Request...");
-        try { getConnectionFromIP(ip).sendTCP(request); } catch (NullPointerException except) {System.out.println("Client IP given was invalid!");}
+        try { Objects.requireNonNull(getConnectionFromIP(ip)).sendTCP(request); } catch (NullPointerException except) {System.out.println("IP given was invalid!");}
     }
 
     public static Connection getConnectionFromIP(String ip) {
