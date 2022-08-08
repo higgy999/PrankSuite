@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class Main {
+public class PSClient {
 
     public static Client CLIENT;
     public static String SERVER_IP;
@@ -31,7 +31,7 @@ public class Main {
     public static Listener LISTENER = new Listener() {
         public void disconnected(Connection connection) {
             System.out.println("Disconnected from Server!");
-            Thread thread = new Thread(Main::tryConnect); thread.start();
+            Thread thread = new Thread(PSClient::tryConnect); thread.start();
         }
         public void received(Connection connection, Object object) {
             if (object instanceof Packets.OpenWindowsRequest) {
@@ -81,7 +81,7 @@ public class Main {
         new Thread(() -> Application.launch(WeebPopup.class), "Popup").start();
         Platform.setImplicitExit(false);
 
-        CLIENT = new Client();
+        CLIENT = new com.esotericsoftware.kryonet.Client();
         Packets.RegisterPackets(CLIENT.getKryo());
         Thread thread = new Thread(CLIENT, "Networking"); thread.start();
 
