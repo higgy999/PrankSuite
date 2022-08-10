@@ -53,9 +53,14 @@ public class PSClient {
                 System.out.println("Got Change Background Request!");
                 WallpaperChanger.Change(new File("./assets/weeb.jpg").getAbsolutePath());
             }
-            if (object instanceof Packets.TriggerPopup) {
+            if (object instanceof Packets.TriggerPopup request) {
                 System.out.println("Got a Trigger Popup Request!");
-                Platform.runLater(() -> WeebPopup.stage.show());
+                Platform.runLater(() -> {
+                    WeebPopup.STAGE.setTitle(request.title);
+                    WeebPopup.MESSAGE.setText(request.message);
+                    WeebPopup.BUTTON.setText(request.button);
+                    WeebPopup.STAGE.show();
+                });
             }
             if (object instanceof Packets.CloseWindow request) {
                 System.out.println("Got Close Window Request for: " + request.nameOfWindow);

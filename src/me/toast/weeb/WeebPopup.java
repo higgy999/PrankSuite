@@ -10,27 +10,27 @@ import javafx.stage.Stage;
 
 public class WeebPopup extends Application {
 
-    Button okButton;
-    Label weebBoy;
-    public static Stage stage;
+    public static Button BUTTON;
+    public static Label MESSAGE;
+    public static Stage STAGE;
 
     @Override
     public void start(Stage stage) throws Exception {
-        WeebPopup.stage = stage;
-        WeebPopup.stage.setTitle("ALERT! WEEB HAS BEEN FOUND!");
-        WeebPopup.stage.setMinWidth(300);
-        WeebPopup.stage.setAlwaysOnTop(true);
-        WeebPopup.stage.setResizable(false);
+        WeebPopup.STAGE = stage;
+        WeebPopup.STAGE.setTitle("NULL");
+        WeebPopup.STAGE.setMinWidth(300);
+        WeebPopup.STAGE.setAlwaysOnTop(true);
+        WeebPopup.STAGE.setResizable(false);
 
-        weebBoy = new Label("I have caught you in the act of your weebish activities! They must cease immediately.");
-        okButton = new Button("OK");
-        okButton.setOnAction(e -> WeebPopup.stage.hide());
+        MESSAGE = new Label("NULL");
+        BUTTON = new Button("NULL");
+        BUTTON.setOnAction(e -> WeebPopup.STAGE.hide());
 
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(weebBoy, okButton);
+        layout.getChildren().addAll(MESSAGE, BUTTON);
         layout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(layout);
-        WeebPopup.stage.setScene(scene);
+        WeebPopup.STAGE.setScene(scene);
     }
 }

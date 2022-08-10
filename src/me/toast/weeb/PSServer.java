@@ -36,6 +36,8 @@ public class PSServer extends Application {
     public static ListView<String> clientList;
     private String selectedClient;
 
+    public static ListView<Actions> actions;
+
     public static List<String> fetchedWindows = new ArrayList<>();
     //TODO: Figure out better way getting Connection from IP
     public static HashMap<Integer, String> connectedClients = new HashMap<>();
@@ -80,7 +82,8 @@ public class PSServer extends Application {
 
     @Override
     public void start(Stage stage) {
-        stage.setTitle("Weeb Detector - Server");
+        stage.setTitle("Prank Suite");
+        stage.setResizable(false);
 
         refreshOpenWindows = new Button("Refresh");
         refreshOpenWindows.setOnAction(e -> askForWindows(selectedClient));
@@ -95,6 +98,10 @@ public class PSServer extends Application {
         createPopUp = new Button("Create Popup");
         createPopUp.setOnAction(e -> {
             Packets.TriggerPopup request = new Packets.TriggerPopup();
+            //TODO show in UI
+            request.title = "Title";
+            request.message = "Message";
+            request.button = "OK";
             System.out.println("Sending Popup Request...");
             try { Objects.requireNonNull(getConnectionFromIP(selectedClient)).sendTCP(request); } catch (NullPointerException except) {System.out.println("Client IP given was invalid!");}
         });
@@ -115,18 +122,27 @@ public class PSServer extends Application {
         });
 
         openWindows = new ListView<>();
-        openWindows.setPrefWidth(500);
+        openWindows.setPrefWidth(425);
         openWindows.setPrefHeight(600);
         openWindows.setEditable(false);
         openWindows.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> selectedWindow = newValue);
 
         clientList = new ListView<>();
-        clientList.setPrefWidth(500);
+        clientList.setPrefWidth(425);
         clientList.setPrefHeight(600);
         clientList.setEditable(false);
         clientList.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
             askForWindows(newValue);
             selectedClient = newValue;
+        });
+
+        actions = new ListView<>();
+        actions.setPrefWidth(425);
+        actions.setPrefHeight(600);
+        actions.setEditable(false);
+        actions.getItems().addAll(Actions.WINDOW, Actions.WALLPAPER, Actions.SOUND, Actions.POPUP, Actions.POPUP_HTML);
+        actions.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+            //selectedWindow = newValue;
         });
 
         HBox buttonHost = new HBox();
@@ -139,13 +155,18 @@ public class PSServer extends Application {
         tmp.getChildren().addAll(new Label("Open windows:"), refreshOpenWindows);
         openHost.getChildren().addAll(tmp, openWindows);
 
-        VBox clientHost = new VBox();
-        clientHost.setAlignment(Pos.BOTTOM_LEFT);
-        clientHost.getChildren().addAll(new Label("Connected clients:"), clientList);
+        VBox actionPanel = new VBox();
+        actionPanel.setAlignment(Pos.BOTTOM_LEFT);
+        actionPanel.getChildren().addAll(new Label("Actions:"), actions);
+
+        VBox clients = new VBox();
+        clients.setAlignment(Pos.BOTTOM_LEFT);
+        clients.getChildren().addAll(new Label("Connected clients:"), clientList);
 
         BorderPane borderPane = new BorderPane();
         borderPane.setTop(buttonHost);
-        borderPane.setLeft(clientHost);
+        borderPane.setLeft(clients);
+        borderPane.setCenter(actionPanel);
         borderPane.setRight(openHost);
 
         Scene scene = new Scene(borderPane, 1280, 720);
