@@ -4,7 +4,7 @@
     <artifact type="jar" name="Server">
       <output-path>$PROJECT_DIR$/out/artifacts/Server</output-path>
       <root id="archive" name="WeebDetector.jar">
-        <element id="module-output" name="WeebDetector" />
+        <element id="module-output" name="Prank Suite" />
         <element id="extracted-dir" path="$PROJECT_DIR$/libs/jna-5.8.0.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/libs/kryonet-2.21-all.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/libs/jna-platform-5.8.0.jar" path-in-jar="/" />
@@ -13,7 +13,7 @@
     <artifact type="jar" name="Client">
       <output-path>$PROJECT_DIR$/out/artifacts/Client</output-path>
       <root id="archive" name="WeebDetector.jar">
-        <element id="module-output" name="WeebDetector" />
+        <element id="module-output" name="Prank Suite" />
         <element id="extracted-dir" path="$PROJECT_DIR$/libs/jna-5.8.0.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/libs/kryonet-2.21-all.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/libs/jna-platform-5.8.0.jar" path-in-jar="/" />
@@ -149,7 +149,7 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/WeebDetector.iml" filepath="$PROJECT_DIR$/WeebDetector.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Prank Suite.iml" filepath="$PROJECT_DIR$/Prank Suite.iml" />
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="17" project-jdk-type="JavaSDK">
