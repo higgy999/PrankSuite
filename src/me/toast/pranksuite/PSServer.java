@@ -89,6 +89,7 @@ public class PSServer extends Application {
         stage.setResizable(false);
 
         refresh = new Button("Refresh");
+        refresh.setVisible(false);
         refresh.setOnAction(e -> {
             if (selectedAction == Action.WINDOW) {
                 thirdList.getItems().clear();
@@ -118,6 +119,7 @@ public class PSServer extends Application {
         });
 
         send = new Button("Send");
+        send.setVisible(false);
         send.setOnAction(e -> {
             if (selectedAction == Action.WINDOW) {
                 if (fetchedWindows.contains(selectedWindow)) {
@@ -187,14 +189,17 @@ public class PSServer extends Application {
         actions.getItems().addAll(Action.WINDOW, Action.WALLPAPER, Action.SOUND, Action.POPUP, Action.POPUP_HTML);
         actions.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
             selectedAction = newValue;
+            send.setVisible(true);
             if (newValue == Action.WINDOW) {
-                thirdList.getItems().clear();
                 whatIsThirdList.setText("Open Windows   ");
+                thirdList.getItems().clear();
+                refresh.setVisible(true);
                 askForWindows(selectedClient);
             }
             if (newValue == Action.WALLPAPER) {
                 whatIsThirdList.setText("Set Wallpaper   ");
                 thirdList.getItems().clear();
+                refresh.setVisible(true);
                 File[] files = getFilesInDirectory("./assets/backgrounds", "jpg");
                 for (File file : files)
                     thirdList.getItems().add(file.getName());
@@ -202,17 +207,20 @@ public class PSServer extends Application {
              if (newValue == Action.SOUND) {
                 whatIsThirdList.setText("Play Sound   ");
                 thirdList.getItems().clear();
+                 refresh.setVisible(true);
                 File[] files = getFilesInDirectory("./assets/sounds", "mp3");
                 for (File file : files)
                     thirdList.getItems().add(file.getName());
              }if (newValue == Action.POPUP) {
                 whatIsThirdList.setText("Trigger Popup   ");
                 thirdList.getItems().clear();
+                refresh.setVisible(false);
                 //TODO UI for Sending
             }
              if (newValue == Action.POPUP_HTML) {
                 whatIsThirdList.setText("Trigger HTML Popup   ");
                 thirdList.getItems().clear();
+                 refresh.setVisible(true);
                 File[] files = getFilesInDirectory("./assets/html", "html");
                 for (File file : files)
                     thirdList.getItems().add(file.getName());
