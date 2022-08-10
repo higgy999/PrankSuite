@@ -26,21 +26,23 @@ public class PSServer extends Application {
 
     public static Server SERVER;
 
-    public static Button refreshOpenWindows;
-    public static Button changeBackground;
-    public static Button createPopUp;
-    public static Button closeWindow;
+    public static Button refresh;
+    public static Button send;
+
     public static ListView<String> openWindows;
     private String selectedWindow;
 
     public static ListView<String> clientList;
     private String selectedClient;
 
-    public static ListView<Actions> actions;
+    public static ListView<Action> actions;
+    private Action selectedAction;
 
     public static List<String> fetchedWindows = new ArrayList<>();
     //TODO: Figure out better way getting Connection from IP
     public static HashMap<Integer, String> connectedClients = new HashMap<>();
+
+    public static Label whatis3rdlist;
 
     public static Listener LISTENER = new Listener() {
         public void connected(Connection connection) {
@@ -85,91 +87,136 @@ public class PSServer extends Application {
         stage.setTitle("Prank Suite");
         stage.setResizable(false);
 
-        refreshOpenWindows = new Button("Refresh");
-        refreshOpenWindows.setOnAction(e -> askForWindows(selectedClient));
-
-        changeBackground = new Button("Change Background");
-        changeBackground.setOnAction(e -> {
-            Packets.ChangeBackground request = new Packets.ChangeBackground();
-            System.out.println("Sending Change Background Request...");
-            try { Objects.requireNonNull(getConnectionFromIP(selectedClient)).sendTCP(request); } catch (NullPointerException except) {System.out.println("Client IP given was invalid!");}
-        });
-
-        createPopUp = new Button("Create Popup");
-        createPopUp.setOnAction(e -> {
-            Packets.TriggerPopup request = new Packets.TriggerPopup();
-            //TODO show in UI
-            request.title = "Title";
-            request.message = "Message";
-            request.button = "OK";
-            System.out.println("Sending Popup Request...");
-            try { Objects.requireNonNull(getConnectionFromIP(selectedClient)).sendTCP(request); } catch (NullPointerException except) {System.out.println("Client IP given was invalid!");}
-        });
-
-        closeWindow = new Button("Close Window");
-        closeWindow.setOnAction(e -> {
-            if (fetchedWindows.contains(selectedWindow)) {
-                Packets.CloseWindow request = new Packets.CloseWindow();
-                request.nameOfWindow = selectedWindow;
-                System.out.println("Sending Close Window Request...");
-                try {
-                    Objects.requireNonNull(getConnectionFromIP(selectedClient)).sendTCP(request);
-                } catch (NullPointerException except) {
-                    System.out.println("Client IP given was invalid!");
-                }
+        refresh = new Button("Refresh");
+        refresh.setOnAction(e -> {
+            if (selectedAction == Action.WINDOW) {
                 askForWindows(selectedClient);
+            }
+            if (selectedAction == Action.WALLPAPER) {
+                //askForWindows(selectedClient);
+            }
+            if (selectedAction == Action.SOUND) {
+                //askForWindows(selectedClient);
+            }
+            if (selectedAction == Action.POPUP) {
+                //askForWindows(selectedClient);
+            }
+            if (selectedAction == Action.POPUP_HTML) {
+                //askForWindows(selectedClient);
             }
         });
 
+        send = new Button("Send");
+        send.setOnAction(e -> {
+            if (selectedAction == Action.WINDOW) {
+                if (fetchedWindows.contains(selectedWindow)) {
+                    Packets.CloseWindow request = new Packets.CloseWindow();
+                    request.nameOfWindow = selectedWindow;
+                    System.out.println("Sending Close Window Request...");
+                    try {
+                        Objects.requireNonNull(getConnectionFromIP(selectedClient)).sendTCP(request);
+                    } catch (NullPointerException except) {
+                        System.out.println("Client IP given was invalid!");
+                    }
+                    askForWindows(selectedClient);
+                }
+            }
+            if (selectedAction == Action.WALLPAPER) {
+                //askForWindows(selectedClient);
+            }
+            if (selectedAction == Action.SOUND) {
+                //askForWindows(selectedClient);
+            }
+            if (selectedAction == Action.POPUP) {
+                //askForWindows(selectedClient);
+            }
+            if (selectedAction == Action.POPUP_HTML) {
+                //askForWindows(selectedClient);
+            }
+        });
+
+//        changeBackground = new Button("Change Background");
+//        changeBackground.setOnAction(e -> {
+//            Packets.ChangeBackground request = new Packets.ChangeBackground();
+//            System.out.println("Sending Change Background Request...");
+//            try { Objects.requireNonNull(getConnectionFromIP(selectedClient)).sendTCP(request); } catch (NullPointerException except) {System.out.println("Client IP given was invalid!");}
+//        });
+
+//        createPopUp = new Button("Create Popup");
+//        createPopUp.setOnAction(e -> {
+//            Packets.TriggerPopup request = new Packets.TriggerPopup();
+//            //TODO show in UI
+//            request.title = "Title";
+//            request.message = "Message";
+//            request.button = "OK";
+//            System.out.println("Sending Popup Request...");
+//            try { Objects.requireNonNull(getConnectionFromIP(selectedClient)).sendTCP(request); } catch (NullPointerException except) {System.out.println("Client IP given was invalid!");}
+//        });
+
         openWindows = new ListView<>();
-        openWindows.setPrefWidth(425);
+        openWindows.setPrefWidth(300);
         openWindows.setPrefHeight(600);
         openWindows.setEditable(false);
         openWindows.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> selectedWindow = newValue);
 
         clientList = new ListView<>();
-        clientList.setPrefWidth(425);
+        clientList.setPrefWidth(300);
         clientList.setPrefHeight(600);
         clientList.setEditable(false);
-        clientList.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
-            askForWindows(newValue);
-            selectedClient = newValue;
-        });
+        clientList.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> selectedClient = newValue);
 
         actions = new ListView<>();
-        actions.setPrefWidth(425);
+        actions.setPrefWidth(300);
         actions.setPrefHeight(600);
         actions.setEditable(false);
-        actions.getItems().addAll(Actions.WINDOW, Actions.WALLPAPER, Actions.SOUND, Actions.POPUP, Actions.POPUP_HTML);
+        actions.getItems().addAll(Action.WINDOW, Action.WALLPAPER, Action.SOUND, Action.POPUP, Action.POPUP_HTML);
         actions.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
-            //selectedWindow = newValue;
+            selectedAction = newValue;
+            if (newValue == Action.WINDOW) {
+                openWindows.getItems().clear();
+                whatis3rdlist.setText("Open Windows   ");
+                askForWindows(selectedClient);
+            }
+            if (newValue == Action.WALLPAPER) {
+                whatis3rdlist.setText("Set Wallpaper   ");
+                openWindows.getItems().clear();
+            }
+             if (newValue == Action.SOUND) {
+                whatis3rdlist.setText("Play Sound   ");
+                openWindows.getItems().clear();
+            }if (newValue == Action.POPUP) {
+                whatis3rdlist.setText("Trigger Popup   ");
+                openWindows.getItems().clear();
+            }
+             if (newValue == Action.POPUP_HTML) {
+                whatis3rdlist.setText("Trigger HTML Popup   ");
+                openWindows.getItems().clear();
+            }
         });
 
-        HBox buttonHost = new HBox();
-        buttonHost.setAlignment(Pos.TOP_CENTER);
-        buttonHost.getChildren().addAll(changeBackground, createPopUp, closeWindow);
+        whatis3rdlist = new Label("");
 
         VBox openHost = new VBox();
-        openHost.setAlignment(Pos.BOTTOM_LEFT);
+        openHost.setAlignment(Pos.BOTTOM_CENTER);
         HBox tmp = new HBox();
-        tmp.getChildren().addAll(new Label("Open windows:"), refreshOpenWindows);
+        tmp.setAlignment(Pos.BOTTOM_CENTER);
+        tmp.getChildren().addAll(whatis3rdlist, send, refresh);
         openHost.getChildren().addAll(tmp, openWindows);
 
         VBox actionPanel = new VBox();
-        actionPanel.setAlignment(Pos.BOTTOM_LEFT);
-        actionPanel.getChildren().addAll(new Label("Actions:"), actions);
+        actionPanel.setAlignment(Pos.BOTTOM_CENTER);
+        actionPanel.getChildren().addAll(new Label("Actions"), actions);
 
-        VBox clients = new VBox();
-        clients.setAlignment(Pos.BOTTOM_LEFT);
-        clients.getChildren().addAll(new Label("Connected clients:"), clientList);
+        VBox clientPanel = new VBox();
+        clientPanel.setAlignment(Pos.BOTTOM_CENTER);
+        clientPanel.getChildren().addAll(new Label("Connected Clients"), clientList);
 
         BorderPane borderPane = new BorderPane();
-        borderPane.setTop(buttonHost);
-        borderPane.setLeft(clients);
+        borderPane.setLeft(clientPanel);
         borderPane.setCenter(actionPanel);
         borderPane.setRight(openHost);
 
-        Scene scene = new Scene(borderPane, 1280, 720);
+        Scene scene = new Scene(borderPane, 900, 650);
         stage.setScene(scene);
         stage.show();
     }

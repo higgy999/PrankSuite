@@ -1,6 +1,6 @@
 package me.toast.pranksuite;
 
-public enum Actions {
+public enum Action {
     SOUND,
     WALLPAPER,
     WINDOW,
