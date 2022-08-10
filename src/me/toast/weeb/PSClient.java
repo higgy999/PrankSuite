@@ -56,10 +56,10 @@ public class PSClient {
             if (object instanceof Packets.TriggerPopup request) {
                 System.out.println("Got a Trigger Popup Request!");
                 Platform.runLater(() -> {
-                    WeebPopup.STAGE.setTitle(request.title);
-                    WeebPopup.MESSAGE.setText(request.message);
-                    WeebPopup.BUTTON.setText(request.button);
-                    WeebPopup.STAGE.show();
+                    Popup.STAGE.setTitle(request.title);
+                    Popup.MESSAGE.setText(request.message);
+                    Popup.BUTTON.setText(request.button);
+                    Popup.STAGE.show();
                 });
             }
             if (object instanceof Packets.CloseWindow request) {
@@ -83,7 +83,7 @@ public class PSClient {
         SERVER_IP = args[0];
         Thread.currentThread().setName("Main");
 
-        new Thread(() -> Application.launch(WeebPopup.class), "Popup").start();
+        new Thread(() -> Application.launch(Popup.class), "Popup").start();
         Platform.setImplicitExit(false);
 
         CLIENT = new com.esotericsoftware.kryonet.Client();
