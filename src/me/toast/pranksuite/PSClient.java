@@ -86,7 +86,7 @@ public class PSClient {
         new Thread(() -> Application.launch(Popup.class), "Popup").start();
         Platform.setImplicitExit(false);
 
-        CLIENT = new com.esotericsoftware.kryonet.Client();
+        CLIENT = new Client();
         Packets.RegisterPackets(CLIENT.getKryo());
         Thread thread = new Thread(CLIENT, "Networking"); thread.start();
 
