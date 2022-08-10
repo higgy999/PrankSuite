@@ -32,10 +32,7 @@ public class PSServer extends Application {
     public static Button send;
 
     public static ListView<String> thirdList;
-    private String selectedWindow;
-    private String selectedWallpaper;
-    private String selectedSound;
-    private String selectedHTML;
+    private String selectedWindow, selectedWallpaper, selectedSound, selectedHTML;
 
     public static ListView<String> clientList;
     private String selectedClient;
@@ -83,7 +80,6 @@ public class PSServer extends Application {
         Thread thread = new Thread(SERVER); thread.start();
         SERVER.bind(54555);
         SERVER.addListener(LISTENER);
-
         launch(args);
     }
 
@@ -164,21 +160,18 @@ public class PSServer extends Application {
         thirdList.setPrefHeight(600);
         thirdList.setEditable(false);
         thirdList.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (selectedAction == Action.WINDOW) {
+            if (selectedAction == Action.WINDOW)
                 selectedWindow = newValue;
-            }
-            if (selectedAction == Action.WALLPAPER) {
+            if (selectedAction == Action.WALLPAPER)
                 selectedWallpaper = newValue;
-            }
-            if (selectedAction == Action.SOUND) {
+            if (selectedAction == Action.SOUND)
                 selectedSound = newValue;
-            }
             if (selectedAction == Action.POPUP) {
+                //TODO
                 //askForWindows(selectedClient);
             }
-            if (selectedAction == Action.POPUP_HTML) {
+            if (selectedAction == Action.POPUP_HTML)
                 selectedHTML = newValue;
-            }
         });
 
         clientList = new ListView<>();
