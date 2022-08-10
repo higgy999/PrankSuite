@@ -1,4 +1,4 @@
-package me.toast.weeb;
+package me.toast.pranksuite;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;

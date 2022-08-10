@@ -1,4 +1,4 @@
-package me.toast.weeb;
+package me.toast.pranksuite;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;

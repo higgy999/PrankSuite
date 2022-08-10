@@ -1,4 +1,4 @@
-package me.toast.weeb;
+package me.toast.pranksuite;
 
 public enum Actions {
     SOUND,
