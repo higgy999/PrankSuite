@@ -3,6 +3,8 @@ package me.toast.pranksuite;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,19 +95,29 @@ public class PSServer extends Application {
         refresh = new Button("Refresh");
         refresh.setOnAction(e -> {
             if (selectedAction == Action.WINDOW) {
+                thirdList.getItems().clear();
                 askForWindows(selectedClient);
             }
             if (selectedAction == Action.WALLPAPER) {
-                //askForWindows(selectedClient);
+                thirdList.getItems().clear();
+                File[] files = getFilesInDirectory("./assets/backgrounds", "jpg");
+                for (File file : files)
+                    thirdList.getItems().add(file.getName());
             }
             if (selectedAction == Action.SOUND) {
-                //askForWindows(selectedClient);
+                thirdList.getItems().clear();
+                File[] files = getFilesInDirectory("./assets/sounds", "mp3");
+                for (File file : files)
+                    thirdList.getItems().add(file.getName());
             }
             if (selectedAction == Action.POPUP) {
                 //askForWindows(selectedClient);
             }
             if (selectedAction == Action.POPUP_HTML) {
-                //askForWindows(selectedClient);
+                thirdList.getItems().clear();
+                File[] files = getFilesInDirectory("./assets/html", "html");
+                for (File file : files)
+                    thirdList.getItems().add(file.getName());
             }
         });
 
@@ -190,12 +202,16 @@ public class PSServer extends Application {
             if (newValue == Action.WALLPAPER) {
                 whatIsThirdList.setText("Set Wallpaper   ");
                 thirdList.getItems().clear();
-                //TODO Fetch Directory
+                File[] files = getFilesInDirectory("./assets/backgrounds", "jpg");
+                for (File file : files)
+                    thirdList.getItems().add(file.getName());
             }
              if (newValue == Action.SOUND) {
                 whatIsThirdList.setText("Play Sound   ");
                 thirdList.getItems().clear();
-                 //TODO Fetch Directory
+                File[] files = getFilesInDirectory("./assets/sounds", "mp3");
+                for (File file : files)
+                    thirdList.getItems().add(file.getName());
              }if (newValue == Action.POPUP) {
                 whatIsThirdList.setText("Trigger Popup   ");
                 thirdList.getItems().clear();
@@ -204,7 +220,9 @@ public class PSServer extends Application {
              if (newValue == Action.POPUP_HTML) {
                 whatIsThirdList.setText("Trigger HTML Popup   ");
                 thirdList.getItems().clear();
-                 //TODO Fetch Directory
+                File[] files = getFilesInDirectory("./assets/html", "html");
+                for (File file : files)
+                    thirdList.getItems().add(file.getName());
              }
         });
 
@@ -239,6 +257,10 @@ public class PSServer extends Application {
         Packets.OpenWindowsRequest request = new Packets.OpenWindowsRequest();
         System.out.println("Sending Window Request...");
         try { Objects.requireNonNull(getConnectionFromIP(ip)).sendTCP(request); } catch (NullPointerException except) {System.out.println("IP given was invalid!");}
+    }
+
+    public File[] getFilesInDirectory(String directory, String fileExtension) {
+        return new File(directory).listFiles((dir1, name) -> name.toLowerCase().endsWith("."+fileExtension));
     }
 
     public static Connection getConnectionFromIP(String ip) {
