@@ -23,8 +23,6 @@ import javafx.stage.Stage;
 
 public class PSServer extends Application {
 
-    //TODO Redo access levels
-
     public static Server SERVER;
 
     public static Button refresh;
@@ -40,7 +38,6 @@ public class PSServer extends Application {
     private Action selectedAction;
 
     public static List<String> fetchedWindows = new ArrayList<>();
-    //TODO: Figure out better way getting Connection from IP
     public static HashMap<Integer, String> connectedClients = new HashMap<>();
 
     public static Label whatIsThirdList;
