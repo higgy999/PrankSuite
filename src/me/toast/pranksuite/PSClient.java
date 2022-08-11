@@ -15,7 +15,7 @@ import java.util.List;
 public class PSClient {
 
     public static Client CLIENT;
-    public static String SERVER_IP;
+    public static String SERVER_IP = "127.0.0.1";
 
     public static void tryConnect() {
         while (!CLIENT.isConnected()) {
@@ -59,7 +59,7 @@ public class PSClient {
             }
 
             if (object instanceof Packets.FileTransferRequest request) {
-                System.out.println("Got Change Background Request!");
+                System.out.println("Got FileTransferRequest!");
 
                 String path = "./assets/";
                 if (request.action == Action.WALLPAPER)
@@ -143,7 +143,6 @@ public class PSClient {
     };
 
     public static void main(String[] args) {
-        SERVER_IP = "127.0.0.1";
         Thread.currentThread().setName("Main");
 
         new Thread(() -> Application.launch(Popup.class), "Popup").start();
