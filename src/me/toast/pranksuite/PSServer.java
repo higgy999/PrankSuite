@@ -232,7 +232,7 @@ public class PSServer extends Application {
             selectedAction = newValue;
             send.setVisible(true);
             if (newValue == Action.WINDOW) {
-                whatIsThirdList.setText("Open Windows   ");
+                whatIsThirdList.setText("Close Windows   ");
                 thirdList.getItems().clear();
                 refresh.setVisible(true);
                 askForWindows(selectedClient);
