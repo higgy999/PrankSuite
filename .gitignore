@@ -1,2 +1,4 @@
 /out
-WeebDetector.iws
+received-*
+assets/META-INF/MANIFEST.MF
+*.MF
