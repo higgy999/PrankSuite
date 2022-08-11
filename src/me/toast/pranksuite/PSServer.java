@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Objects;
 
 import com.esotericsoftware.kryonet.Server;
-import com.esotericsoftware.kryonet.util.InputStreamSender;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -45,6 +44,9 @@ public class PSServer extends Application {
 
     public static Label whatIsThirdList;
 
+    public static Connection currentFileTransfer;
+    public static FileTransferListener ftl;
+
     public static Listener LISTENER = new Listener() {
         public void connected(Connection connection) {
             connectedClients.put(connection.getID(), connection.getRemoteAddressTCP().getHostString());
@@ -69,6 +71,10 @@ public class PSServer extends Application {
                     thirdList.getItems().clear();
                     thirdList.getItems().addAll(fetchedWindows);
                 });
+            }
+            if (object instanceof Packets.FileTransferFinish && currentFileTransfer != null) {
+                currentFileTransfer.removeListener(ftl);
+                currentFileTransfer = null;
             }
         }
     };
@@ -134,7 +140,10 @@ public class PSServer extends Application {
                 }
             }
             if (selectedAction == Action.WALLPAPER) {
-                Connection connection = Objects.requireNonNull(getConnectionFromIP(selectedClient));
+                if (currentFileTransfer != null)
+                    return;
+
+                currentFileTransfer = Objects.requireNonNull(getConnectionFromIP(selectedClient));
 
                 File file = new File("./assets/backgrounds/" + selectedWallpaper);
                 InputStream in = null;
@@ -143,22 +152,8 @@ public class PSServer extends Application {
                 } catch (FileNotFoundException ex) {
                     return;
                 }
-                connection.addListener(new InputStreamSender(in, 512) {
-                    @Override
-                    protected void start () {
-                        Packets.ChangeBackground request = new Packets.ChangeBackground();
-                        request.name = selectedWallpaper;
-                        request.totalSize = file.length();
-                        System.out.println("Sending Change Background Request...");
-                        connection.sendTCP(request);
-                    }
-                    @Override
-                    protected Object next(byte[] bytes) {
-                        Packets.ChangeBackgroundPiece packet = new Packets.ChangeBackgroundPiece();
-                        packet.piece = bytes;
-                        return packet;
-                    }
-                });
+                ftl = new FileTransferListener(in, selectedWallpaper, Action.WALLPAPER, currentFileTransfer);
+                currentFileTransfer.addListener(ftl);
             }
             if (selectedAction == Action.SOUND) {
                 //askForWindows(selectedClient);

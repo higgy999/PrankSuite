@@ -57,7 +57,7 @@ public class PSClient {
                 connection.sendTCP(last);
             }
 
-            if (object instanceof Packets.ChangeBackground request) {
+            if (object instanceof Packets.FileTransferRequest request) {
                 System.out.println("Got Change Background Request!");
                 try {
                     out = new FileOutputStream(new File("./assets/backgrounds/received-"+request.name).getAbsolutePath());
@@ -68,9 +68,9 @@ public class PSClient {
                 totalSize = request.totalSize;
                 //WallpaperChanger.Change(new File("./assets/weeb.jpg").getAbsolutePath());
             }
-            if (object instanceof Packets.ChangeBackgroundPiece data) {
+            if (object instanceof Packets.FileTransferPiece data) {
                 int length = data.piece.length;
-                System.out.println("Got Change Background Piece! " + length);
+                System.out.println("Got FileTransferPiece! " + length);
                 try {
                     out.write(data.piece);
                 } catch (IOException e) {
@@ -78,10 +78,18 @@ public class PSClient {
                 }
                 currentSize += length;
                 if (currentSize == totalSize) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     WallpaperChanger.Change(new File(name).getAbsolutePath());
                     //name = "";
                     //totalSize = 0L;
                     currentSize = 0L;
+
+                    Packets.FileTransferFinish finish = new Packets.FileTransferFinish();
+                    connection.sendTCP(finish);
                 }
 
                 //WallpaperChanger.Change(new File("./assets/weeb.jpg").getAbsolutePath());
