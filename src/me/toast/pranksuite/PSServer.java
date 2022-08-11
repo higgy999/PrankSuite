@@ -15,6 +15,7 @@ import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -46,6 +47,8 @@ public class PSServer extends Application {
 
     public static Connection currentFileTransfer;
     public static FileTransferListener ftl;
+
+    //public static TextFieldListCell<String> defaultCell;
 
     public static Listener LISTENER = new Listener() {
         public void connected(Connection connection) {
@@ -112,9 +115,6 @@ public class PSServer extends Application {
                 for (File file : files)
                     thirdList.getItems().add(file.getName());
             }
-            if (selectedAction == Action.POPUP) {
-                //askForWindows(selectedClient);
-            }
             if (selectedAction == Action.POPUP_HTML) {
                 thirdList.getItems().clear();
                 File[] files = getFilesInDirectory("./assets/html", "html");
@@ -173,10 +173,9 @@ public class PSServer extends Application {
             }
             if (selectedAction == Action.POPUP) {
                 Packets.TriggerPopup request = new Packets.TriggerPopup();
-                //TODO show in UI
-                request.title = "Title";
-                request.message = "Message";
-                request.button = "OK";
+                request.title = thirdList.getItems().get(0);
+                request.message = thirdList.getItems().get(1);
+                request.button = thirdList.getItems().get(2);
                 System.out.println("Sending Popup Request...");
                 try { Objects.requireNonNull(getConnectionFromIP(selectedClient)).sendTCP(request); } catch (NullPointerException except) {System.out.println("Client IP given was invalid!");}
             }
@@ -209,10 +208,6 @@ public class PSServer extends Application {
                 selectedWallpaper = newValue;
             if (selectedAction == Action.SOUND)
                 selectedSound = newValue;
-            if (selectedAction == Action.POPUP) {
-                //TODO
-                //askForWindows(selectedClient);
-            }
             if (selectedAction == Action.POPUP_HTML)
                 selectedHTML = newValue;
         });
@@ -231,40 +226,39 @@ public class PSServer extends Application {
         actions.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
             selectedAction = newValue;
             send.setVisible(true);
+            thirdList.getItems().clear();
             if (newValue == Action.WINDOW) {
                 whatIsThirdList.setText("Close Windows   ");
-                thirdList.getItems().clear();
-                refresh.setVisible(true);
                 askForWindows(selectedClient);
             }
             if (newValue == Action.WALLPAPER) {
                 whatIsThirdList.setText("Set Wallpaper   ");
-                thirdList.getItems().clear();
-                refresh.setVisible(true);
                 File[] files = getFilesInDirectory("./assets/backgrounds", "jpg");
                 for (File file : files)
                     thirdList.getItems().add(file.getName());
             }
              if (newValue == Action.SOUND) {
                 whatIsThirdList.setText("Play Sound   ");
-                thirdList.getItems().clear();
-                 refresh.setVisible(true);
                 File[] files = getFilesInDirectory("./assets/sounds", "mp3");
                 for (File file : files)
                     thirdList.getItems().add(file.getName());
-             }if (newValue == Action.POPUP) {
+             }
+             if (newValue == Action.POPUP) {
                 whatIsThirdList.setText("Trigger Popup   ");
-                thirdList.getItems().clear();
                 refresh.setVisible(false);
-                //TODO UI for Sending
+                thirdList.setEditable(true);
+                thirdList.setCellFactory(TextFieldListCell.forListView());
+                thirdList.getItems().addAll("Title", "Message", "Button");
             }
              if (newValue == Action.POPUP_HTML) {
                 whatIsThirdList.setText("Trigger HTML Popup   ");
-                thirdList.getItems().clear();
-                 refresh.setVisible(true);
                 File[] files = getFilesInDirectory("./assets/html", "html");
                 for (File file : files)
                     thirdList.getItems().add(file.getName());
+             }
+             if (newValue != Action.POPUP) {
+                 refresh.setVisible(true);
+                 thirdList.setEditable(false);
              }
         });
 
