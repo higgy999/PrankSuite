@@ -39,7 +39,8 @@ public class PSClient {
         FileOutputStream out;
         long totalSize;
         long currentSize;
-        String name;
+        String pathandname;
+        Action action;
         public void received(Connection connection, Object object) {
             if (object instanceof Packets.OpenWindowsRequest) {
                 System.out.println("Got Window Request!");
@@ -59,14 +60,23 @@ public class PSClient {
 
             if (object instanceof Packets.FileTransferRequest request) {
                 System.out.println("Got Change Background Request!");
+
+                String path = "./assets/";
+                if (request.action == Action.WALLPAPER)
+                    path+="backgrounds/";
+                if (request.action == Action.SOUND)
+                    path+="sounds/";
+                if (request.action == Action.POPUP_HTML)
+                    path+="html/";
+                pathandname = path+"received-"+request.name;
+                action = request.action;
+                totalSize = request.totalSize;
+
                 try {
-                    out = new FileOutputStream(new File("./assets/backgrounds/received-"+request.name).getAbsolutePath());
+                    out = new FileOutputStream(new File(pathandname).getAbsolutePath());
                 } catch (FileNotFoundException e) {
                     throw new RuntimeException(e);
                 }
-                name = "./assets/backgrounds/received-"+request.name;
-                totalSize = request.totalSize;
-                //WallpaperChanger.Change(new File("./assets/weeb.jpg").getAbsolutePath());
             }
             if (object instanceof Packets.FileTransferPiece data) {
                 int length = data.piece.length;
@@ -83,16 +93,30 @@ public class PSClient {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    WallpaperChanger.Change(new File(name).getAbsolutePath());
-                    //name = "";
-                    //totalSize = 0L;
+
+                    File file = new File(pathandname);
+
+                    if (action == Action.WALLPAPER)
+                        WallpaperChanger.Change(file.getAbsolutePath());
+                    if (action == Action.SOUND)
+                        new PlaySound(file);
+                   if (action == Action.POPUP_HTML) {
+                       Platform.runLater(() -> {
+                           Popup.STAGE.setTitle("");
+                           Popup.STAGE.setScene(Popup.HTML);
+                           Popup.ENGINE.load("file://"+file.getAbsolutePath());
+                           Popup.STAGE.show();
+                       });
+                   }
+
                     currentSize = 0L;
+                    totalSize = 0L;
+                    action = null;
+                    pathandname = "";
 
                     Packets.FileTransferFinish finish = new Packets.FileTransferFinish();
                     connection.sendTCP(finish);
                 }
-
-                //WallpaperChanger.Change(new File("./assets/weeb.jpg").getAbsolutePath());
             }
 
             if (object instanceof Packets.TriggerPopup request) {
@@ -101,6 +125,7 @@ public class PSClient {
                     Popup.STAGE.setTitle(request.title);
                     Popup.MESSAGE.setText(request.message);
                     Popup.BUTTON.setText(request.button);
+                    Popup.STAGE.setScene(Popup.POPUP);
                     Popup.STAGE.show();
                 });
             }
@@ -118,11 +143,7 @@ public class PSClient {
     };
 
     public static void main(String[] args) {
-        if (args[0] == null) {
-            System.err.println("No server IP set for first argument");
-            System.exit(1);
-        }
-        SERVER_IP = args[0];
+        SERVER_IP = "127.0.0.1";
         Thread.currentThread().setName("Main");
 
         new Thread(() -> Application.launch(Popup.class), "Popup").start();

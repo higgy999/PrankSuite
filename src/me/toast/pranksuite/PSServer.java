@@ -146,7 +146,7 @@ public class PSServer extends Application {
                 currentFileTransfer = Objects.requireNonNull(getConnectionFromIP(selectedClient));
 
                 File file = new File("./assets/backgrounds/" + selectedWallpaper);
-                InputStream in = null;
+                InputStream in;
                 try {
                     in = new FileInputStream(file);
                 } catch (FileNotFoundException ex) {
@@ -156,7 +156,20 @@ public class PSServer extends Application {
                 currentFileTransfer.addListener(ftl);
             }
             if (selectedAction == Action.SOUND) {
-                //askForWindows(selectedClient);
+                if (currentFileTransfer != null)
+                    return;
+
+                currentFileTransfer = Objects.requireNonNull(getConnectionFromIP(selectedClient));
+
+                File file = new File("./assets/sounds/" + selectedSound);
+                InputStream in;
+                try {
+                    in = new FileInputStream(file);
+                } catch (FileNotFoundException ex) {
+                    return;
+                }
+                ftl = new FileTransferListener(in, selectedSound, Action.SOUND, currentFileTransfer);
+                currentFileTransfer.addListener(ftl);
             }
             if (selectedAction == Action.POPUP) {
                 Packets.TriggerPopup request = new Packets.TriggerPopup();
@@ -168,7 +181,20 @@ public class PSServer extends Application {
                 try { Objects.requireNonNull(getConnectionFromIP(selectedClient)).sendTCP(request); } catch (NullPointerException except) {System.out.println("Client IP given was invalid!");}
             }
             if (selectedAction == Action.POPUP_HTML) {
-                //askForWindows(selectedClient);
+                if (currentFileTransfer != null)
+                    return;
+
+                currentFileTransfer = Objects.requireNonNull(getConnectionFromIP(selectedClient));
+
+                File file = new File("./assets/html/" + selectedHTML);
+                InputStream in;
+                try {
+                    in = new FileInputStream(file);
+                } catch (FileNotFoundException ex) {
+                    return;
+                }
+                ftl = new FileTransferListener(in, selectedHTML, Action.POPUP_HTML, currentFileTransfer);
+                currentFileTransfer.addListener(ftl);
             }
         });
 
