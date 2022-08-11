@@ -140,7 +140,7 @@ public class PSServer extends Application {
                 }
             }
             if (selectedAction == Action.WALLPAPER) {
-                if (currentFileTransfer != null)
+                if (currentFileTransfer != null || selectedWallpaper == null)
                     return;
 
                 currentFileTransfer = Objects.requireNonNull(getConnectionFromIP(selectedClient));
@@ -156,7 +156,7 @@ public class PSServer extends Application {
                 currentFileTransfer.addListener(ftl);
             }
             if (selectedAction == Action.SOUND) {
-                if (currentFileTransfer != null)
+                if (currentFileTransfer != null || selectedSound == null)
                     return;
 
                 currentFileTransfer = Objects.requireNonNull(getConnectionFromIP(selectedClient));
@@ -181,7 +181,7 @@ public class PSServer extends Application {
                 try { Objects.requireNonNull(getConnectionFromIP(selectedClient)).sendTCP(request); } catch (NullPointerException except) {System.out.println("Client IP given was invalid!");}
             }
             if (selectedAction == Action.POPUP_HTML) {
-                if (currentFileTransfer != null)
+                if (currentFileTransfer != null || selectedHTML == null)
                     return;
 
                 currentFileTransfer = Objects.requireNonNull(getConnectionFromIP(selectedClient));
