@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ArtifactManager">
-    <artifact type="jar" name="Server">
-      <output-path>$PROJECT_DIR$/out/artifacts/Server</output-path>
-      <root id="archive" name="WeebDetector.jar">
+    <artifact type="jar" name="Prank Suite:jar">
+      <output-path>$PROJECT_DIR$/out/artifacts/Prank_Suite_jar</output-path>
+      <root id="archive" name="Prank Suite.jar">
         <element id="module-output" name="Prank Suite" />
+        <element id="extracted-dir" path="$USER_HOME$/Documents/javafx-sdk-18.0.2/lib/javafx-swt.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$USER_HOME$/Documents/javafx-sdk-18.0.2/lib/javafx.web.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$USER_HOME$/Documents/javafx-sdk-18.0.2/lib/javafx.base.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$USER_HOME$/Documents/javafx-sdk-18.0.2/lib/javafx.fxml.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$USER_HOME$/Documents/javafx-sdk-18.0.2/lib/javafx.media.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$USER_HOME$/Documents/javafx-sdk-18.0.2/lib/javafx.swing.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$USER_HOME$/Documents/javafx-sdk-18.0.2/lib/javafx.controls.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$USER_HOME$/Documents/javafx-sdk-18.0.2/lib/javafx.graphics.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/libs/jna-5.8.0.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/libs/kryonet-2.21-all.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/libs/jna-platform-5.8.0.jar" path-in-jar="/" />
-      </root>
-    </artifact>
-    <artifact type="jar" name="Client">
-      <output-path>$PROJECT_DIR$/out/artifacts/Client</output-path>
-      <root id="archive" name="WeebDetector.jar">
-        <element id="module-output" name="Prank Suite" />
-        <element id="extracted-dir" path="$PROJECT_DIR$/libs/jna-5.8.0.jar" path-in-jar="/" />
-        <element id="extracted-dir" path="$PROJECT_DIR$/libs/kryonet-2.21-all.jar" path-in-jar="/" />
-        <element id="extracted-dir" path="$PROJECT_DIR$/libs/jna-platform-5.8.0.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/libs/jaco-mp3-player-0.9.3.jar" path-in-jar="/" />
       </root>
     </artifact>
   </component>
