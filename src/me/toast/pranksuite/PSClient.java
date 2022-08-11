@@ -60,11 +60,11 @@ public class PSClient {
             if (object instanceof Packets.ChangeBackground request) {
                 System.out.println("Got Change Background Request!");
                 try {
-                    out = new FileOutputStream(new File("./assets/background/recieved-"+request.name));
+                    out = new FileOutputStream(new File("./assets/backgrounds/received-"+request.name).getAbsolutePath());
                 } catch (FileNotFoundException e) {
                     throw new RuntimeException(e);
                 }
-                name = "./assets/background/recieved-"+request.name;
+                name = "./assets/backgrounds/received-"+request.name;
                 totalSize = request.totalSize;
                 //WallpaperChanger.Change(new File("./assets/weeb.jpg").getAbsolutePath());
             }
@@ -79,8 +79,8 @@ public class PSClient {
                 currentSize += length;
                 if (currentSize == totalSize) {
                     WallpaperChanger.Change(new File(name).getAbsolutePath());
-                    name = "";
-                    totalSize = 0L;
+                    //name = "";
+                    //totalSize = 0L;
                     currentSize = 0L;
                 }
 

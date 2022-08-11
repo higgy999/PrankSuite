@@ -136,7 +136,7 @@ public class PSServer extends Application {
             if (selectedAction == Action.WALLPAPER) {
                 Connection connection = Objects.requireNonNull(getConnectionFromIP(selectedClient));
 
-                File file = new File("./assets/backgrounds" + selectedWallpaper);
+                File file = new File("./assets/backgrounds/" + selectedWallpaper);
                 InputStream in = null;
                 try {
                     in = new FileInputStream(file);
@@ -154,7 +154,9 @@ public class PSServer extends Application {
                     }
                     @Override
                     protected Object next(byte[] bytes) {
-                        return new Packets.ChangeBackgroundPiece().piece = bytes;
+                        Packets.ChangeBackgroundPiece packet = new Packets.ChangeBackgroundPiece();
+                        packet.piece = bytes;
+                        return packet;
                     }
                 });
             }

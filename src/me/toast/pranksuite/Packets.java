@@ -19,6 +19,7 @@ public class Packets {
         kryo.register(OpenWindowsResponse.class);
         kryo.register(OpenWindowsFinalResponse.class);
         kryo.register(ChangeBackground.class);
+        kryo.register(byte[].class);
         kryo.register(ChangeBackgroundPiece.class);
         kryo.register(TriggerPopup.class);
         kryo.register(CloseWindow.class);
