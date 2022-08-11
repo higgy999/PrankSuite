@@ -3,14 +3,14 @@ package me.toast.pranksuite;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
 import com.esotericsoftware.kryonet.Server;
+import com.esotericsoftware.kryonet.util.InputStreamSender;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -134,10 +134,29 @@ public class PSServer extends Application {
                 }
             }
             if (selectedAction == Action.WALLPAPER) {
-                Packets.ChangeBackground request = new Packets.ChangeBackground();
-                //TODO Send Wallpaper
-                System.out.println("Sending Change Background Request...");
-                try { Objects.requireNonNull(getConnectionFromIP(selectedClient)).sendTCP(request); } catch (NullPointerException except) {System.out.println("Client IP given was invalid!");}
+                Connection connection = Objects.requireNonNull(getConnectionFromIP(selectedClient));
+
+                File file = new File("./assets/backgrounds" + selectedWallpaper);
+                InputStream in = null;
+                try {
+                    in = new FileInputStream(file);
+                } catch (FileNotFoundException ex) {
+                    return;
+                }
+                connection.addListener(new InputStreamSender(in, 512) {
+                    @Override
+                    protected void start () {
+                        Packets.ChangeBackground request = new Packets.ChangeBackground();
+                        request.name = selectedWallpaper;
+                        request.totalSize = file.length();
+                        System.out.println("Sending Change Background Request...");
+                        connection.sendTCP(request);
+                    }
+                    @Override
+                    protected Object next(byte[] bytes) {
+                        return new Packets.ChangeBackgroundPiece().piece = bytes;
+                    }
+                });
             }
             if (selectedAction == Action.SOUND) {
                 //askForWindows(selectedClient);

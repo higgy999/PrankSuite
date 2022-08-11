@@ -7,6 +7,8 @@ import javafx.application.Application;
 import javafx.application.Platform;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -33,6 +35,11 @@ public class PSClient {
             System.out.println("Disconnected from Server!");
             Thread thread = new Thread(PSClient::tryConnect); thread.start();
         }
+
+        FileOutputStream out;
+        long totalSize;
+        long currentSize;
+        String name;
         public void received(Connection connection, Object object) {
             if (object instanceof Packets.OpenWindowsRequest) {
                 System.out.println("Got Window Request!");
@@ -49,10 +56,37 @@ public class PSClient {
                 Packets.OpenWindowsFinalResponse last = new Packets.OpenWindowsFinalResponse();
                 connection.sendTCP(last);
             }
-            if (object instanceof Packets.ChangeBackground) {
+
+            if (object instanceof Packets.ChangeBackground request) {
                 System.out.println("Got Change Background Request!");
-                WallpaperChanger.Change(new File("./assets/weeb.jpg").getAbsolutePath());
+                try {
+                    out = new FileOutputStream(new File("./assets/background/recieved-"+request.name));
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                name = "./assets/background/recieved-"+request.name;
+                totalSize = request.totalSize;
+                //WallpaperChanger.Change(new File("./assets/weeb.jpg").getAbsolutePath());
             }
+            if (object instanceof Packets.ChangeBackgroundPiece data) {
+                int length = data.piece.length;
+                System.out.println("Got Change Background Piece! " + length);
+                try {
+                    out.write(data.piece);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                currentSize += length;
+                if (currentSize == totalSize) {
+                    WallpaperChanger.Change(new File(name).getAbsolutePath());
+                    name = "";
+                    totalSize = 0L;
+                    currentSize = 0L;
+                }
+
+                //WallpaperChanger.Change(new File("./assets/weeb.jpg").getAbsolutePath());
+            }
+
             if (object instanceof Packets.TriggerPopup request) {
                 System.out.println("Got a Trigger Popup Request!");
                 Platform.runLater(() -> {
